@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#CDCBCB"
+    >
+
+    <TextView
+
+        android:id="@+id/tvTitulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="60dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="Nova Senha"
+        android:textSize="24sp"
+
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/editTextDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Descrição" />
+
+    <TextView
+        android:id="@+id/textViewSeekBarLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tamanho"
+        android:layout_marginTop="40dp"
+        android:textSize="18dp"
+
+        />
+
+    <SeekBar
+        android:id="@+id/seekBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:layout_marginTop="8dp" />
+
+    <CheckBox
+        android:id="@+id/checkBoxUpperCase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Letras maiúsculas"
+        android:layout_marginTop="70dp"
+        />
+
+    <CheckBox
+        android:id="@+id/checkBoxNumbers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Números" />
+
+    <CheckBox
+        android:id="@+id/checkBoxSpecialChars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Caracteres especiais" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonGenerate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Gerar"
+            android:backgroundTint="#308810"
+
+            />
+
+        <Button
+            android:id="@+id/buttonCancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cancelar"
+            android:backgroundTint="#F30202" />
+    </LinearLayout>
+</LinearLayout>

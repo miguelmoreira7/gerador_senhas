@@ -7,9 +7,9 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.SeekBar
-import android.view.View
-import android.widget.TextView
 import android.widget.Toast
+import com.example.gerador_senhas.PasswordList.Companion.passwordList
+import kotlin.random.Random
 
 class PasswordEdit : AppCompatActivity() {
 
@@ -36,38 +36,74 @@ class PasswordEdit : AppCompatActivity() {
         cancelButton = findViewById(R.id.buttonCancelar)
 
         val selectedDescription = intent.getStringExtra("desc")
-        val selectedSize = intent.getIntExtra("selectedSize", 8) // Tamanho padrão de 8 caracteres
 
         descriptionEditText.setText(selectedDescription)
-        sizeSeekBar.progress = selectedSize - 1 // Ajuste o valor no SeekBar
+
 
         alterarButton.setOnClickListener {
-            // Recupere os valores atualizados dos campos
+
             val updatedDescription = descriptionEditText.text.toString()
             val updatedSize = sizeSeekBar.progress + 1
             val useUppercase = uppercaseCheckBox.isChecked
             val useNumbers = numbersCheckBox.isChecked
             val useSpecialChars = specialCharsCheckBox.isChecked
 
-            // Execute a lógica de atualização da senha com os valores atualizados
-            // Você pode implementar essa lógica conforme necessário
+            val senhaAtualizada = passwordList.find { it.description == selectedDescription }
 
-            // Exiba uma mensagem de sucesso
+
+            senhaAtualizada?.apply {
+                description = updatedDescription
+                password = generatePassword(updatedSize, useUppercase, useNumbers, useSpecialChars)
+            }
             showToast("Senha atualizada com sucesso")
+            val passwordListIntent = Intent(this, PasswordList::class.java)
+            startActivity(passwordListIntent)
         }
 
         excluirButton.setOnClickListener {
-            // Execute a lógica de exclusão da senha
-            // Você pode implementar essa lógica conforme necessário
+            val senhaExcluida = passwordList.find { it.description == selectedDescription }
 
-            // Exiba uma mensagem de sucesso ou confirmação de exclusão
-            showToast("Senha excluída com sucesso")
+            if (senhaExcluida != null) {
+                passwordList.remove(senhaExcluida)
+                showToast("Senha excluída com sucesso")
+            } else {
+                showToast("Senha não encontrada para exclusão")
+            }
+            val passwordListIntent = Intent(this, PasswordList::class.java)
+            startActivity(passwordListIntent)
+
         }
 
         cancelButton.setOnClickListener {
             val voltar = Intent(this, PasswordList::class.java)
             startActivity(voltar)
         }
+
+    }
+    private fun generatePassword(
+        size: Int,
+        useUppercase: Boolean,
+        useNumbers: Boolean,
+        useSpecialChars: Boolean
+    ): String {
+        val lowercaseLetters = "abcdefghijklmnopqrstuvwxyz"
+        val uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        val numbers = "0123456789"
+        val specialChars = "!@#\$%^&*()-_=+[]{}|;:'\",.<>?/~"
+
+        val allowedChars = StringBuilder(lowercaseLetters)
+        if (useUppercase) allowedChars.append(uppercaseLetters)
+        if (useNumbers) allowedChars.append(numbers)
+        if (useSpecialChars) allowedChars.append(specialChars)
+
+        val password = StringBuilder(size)
+        val random = Random.Default
+        for (i in 0 until size) {
+            val randomIndex = random.nextInt(allowedChars.length)
+            password.append(allowedChars[randomIndex])
+        }
+
+        return password.toString()
 
     }
     private fun showToast(message: String) {

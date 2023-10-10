@@ -41,9 +41,7 @@ class MainActivity : AppCompatActivity() {
 
             generatePassword(size, useUppercase, useNumbers, useSpecialChars, description)
 
-            // Exibe a senha gerada em um Toast para fins de demonstração
-            // Em um aplicativo real, você pode salvar a senha em um local apropriado
-            showToast("Senha gerada")
+
         }
     }
     private fun generatePassword(size: Int, useUppercase: Boolean, useNumbers: Boolean, useSpecialChars: Boolean, description: String) {
@@ -65,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val generatedPassword = password.toString()
+        showToast("Senha gerada: ${password}")
         val passwordListIntent = Intent(this, PasswordList::class.java)
         passwordListIntent.putExtra("newPassword", generatedPassword)
         passwordListIntent.putExtra("newDescription", description)

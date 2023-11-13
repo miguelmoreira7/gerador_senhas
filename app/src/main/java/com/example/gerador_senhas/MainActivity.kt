@@ -14,6 +14,7 @@ import kotlin.random.Random
 
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var dao: SenhaDAO
 
     private lateinit var descriptionEditText: EditText
     private lateinit var sizeSeekBar: SeekBar
@@ -24,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        this.dao = SenhaDAO(this)
 
         descriptionEditText = findViewById(R.id.editTextDescription)
         sizeSeekBar = findViewById(R.id.seekBarSize)
@@ -63,10 +66,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         val generatedPassword = password.toString()
+        this.dao.insert(Senha(description, generatedPassword))
         showToast("Senha gerada: ${password}")
         val passwordListIntent = Intent(this, PasswordList::class.java)
-        passwordListIntent.putExtra("newPassword", generatedPassword)
-        passwordListIntent.putExtra("newDescription", description)
         startActivity(passwordListIntent)
     }
 

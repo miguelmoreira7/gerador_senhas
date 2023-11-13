@@ -8,10 +8,10 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.Toast
-import com.example.gerador_senhas.PasswordList.Companion.passwordList
 import kotlin.random.Random
 
 class PasswordEdit : AppCompatActivity() {
+    private lateinit var dao: SenhaDAO
 
     private lateinit var descriptionEditText: EditText
     private lateinit var sizeSeekBar: SeekBar
@@ -21,10 +21,15 @@ class PasswordEdit : AppCompatActivity() {
     private lateinit var alterarButton: Button
     private lateinit var excluirButton: Button
     private lateinit var cancelButton: Button
+    private lateinit var passwordToEdit: Senha
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_password_edit)
+        val id = intent.getIntExtra("id", 0)
+
+        this.dao = SenhaDAO(this)
+        val passwordToEdit = this.dao.find(id)
 
         descriptionEditText = findViewById(R.id.editTextDescription)
         sizeSeekBar = findViewById(R.id.seekBarSize)
@@ -35,9 +40,9 @@ class PasswordEdit : AppCompatActivity() {
         excluirButton = findViewById(R.id.buttonExcluir)
         cancelButton = findViewById(R.id.buttonCancelar)
 
-        val selectedDescription = intent.getStringExtra("desc")
+        //val selectedDescription = intent.getStringExtra("id")
 
-        descriptionEditText.setText(selectedDescription)
+        descriptionEditText.setText(passwordToEdit?.description)
 
 
         alterarButton.setOnClickListener {
@@ -47,28 +52,18 @@ class PasswordEdit : AppCompatActivity() {
             val useUppercase = uppercaseCheckBox.isChecked
             val useNumbers = numbersCheckBox.isChecked
             val useSpecialChars = specialCharsCheckBox.isChecked
+            generatePassword(updatedSize, useUppercase, useNumbers, useSpecialChars)
 
-            val senhaAtualizada = passwordList.find { it.description == selectedDescription }
 
-
-            senhaAtualizada?.apply {
-                description = updatedDescription
-                password = generatePassword(updatedSize, useUppercase, useNumbers, useSpecialChars)
-            }
             showToast("Senha atualizada com sucesso")
             val passwordListIntent = Intent(this, PasswordList::class.java)
             startActivity(passwordListIntent)
         }
 
         excluirButton.setOnClickListener {
-            val senhaExcluida = passwordList.find { it.description == selectedDescription }
+            val idToDelete = this.passwordToEdit.id
+            this.dao.delete(idToDelete)
 
-            if (senhaExcluida != null) {
-                passwordList.remove(senhaExcluida)
-                showToast("Senha excluída com sucesso")
-            } else {
-                showToast("Senha não encontrada para exclusão")
-            }
             val passwordListIntent = Intent(this, PasswordList::class.java)
             startActivity(passwordListIntent)
 
@@ -85,7 +80,7 @@ class PasswordEdit : AppCompatActivity() {
         useUppercase: Boolean,
         useNumbers: Boolean,
         useSpecialChars: Boolean
-    ): String {
+    ) {
         val lowercaseLetters = "abcdefghijklmnopqrstuvwxyz"
         val uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         val numbers = "0123456789"
@@ -101,9 +96,8 @@ class PasswordEdit : AppCompatActivity() {
         for (i in 0 until size) {
             val randomIndex = random.nextInt(allowedChars.length)
             password.append(allowedChars[randomIndex])
+            this.dao.update(Senha(descriptionEditText.text.toString(), password.toString()))
         }
-
-        return password.toString()
 
     }
     private fun showToast(message: String) {
